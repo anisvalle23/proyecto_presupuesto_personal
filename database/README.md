@@ -1,18 +1,18 @@
 # Configuración e Implementación de la Base de Datos
 
-##Este documento describe cómo se implementó la base de datos del proyecto Sistema de Presupuesto Mensual Personal utilizando Firebird 4.0 dentro de un contenedor Docker.
---
+## Este documento describe cómo se implementó la base de datos del proyecto Sistema de Presupuesto Mensual Personal utilizando Firebird 4.0 dentro de un contenedor Docker.
+---
 
-##Motor de Base de Datos
+## Motor de Base de Datos
 
 Se utilizó Firebird 4.0 como motor de base de datos.
 La imagen Docker utilizada fue: jacobalberty/firebird:4.0.
 
 La base de datos se ejecuta dentro de un contenedor Docker y se administra mediante la herramienta DBeaver para la gestión y ejecución de scripts SQL.
 
---
+---
 
-##Configuración con Docker
+## Configuración con Docker
 
 Primero se descargó la imagen oficial de Firebird 4.0 desde Docker Hub.
 Posteriormente se creó un contenedor llamado firebird_presupuesto, exponiendo el puerto 3050 para permitir conexiones externas.
@@ -20,9 +20,9 @@ Posteriormente se creó un contenedor llamado firebird_presupuesto, exponiendo e
 Se configuró la variable de entorno ISC_PASSWORD para definir la contraseña del usuario SYSDBA.
 Además, se creó un volumen llamado firebird_data con el objetivo de garantizar la persistencia de la información aun cuando el contenedor sea eliminado o reiniciado.
 
---
+---
 
-##Persistencia de Datos
+## Persistencia de Datos
 
 Los datos reales de la base de datos se almacenan en el volumen Docker firebird_data.
 
@@ -30,9 +30,9 @@ El archivo físico de la base de datos (presupuesto.fdb) no se sube al repositor
 
 En su lugar, el repositorio almacena únicamente los scripts SQL necesarios para recrear completamente la estructura de la base de datos.
 
---
+---
 
-##Estructura de Scripts
+## Estructura de Scripts
 
 La carpeta database del proyecto está organizada por responsabilidades:
     •    DDL: contiene el script de creación de tablas y relaciones.
@@ -43,9 +43,9 @@ La carpeta database del proyecto está organizada por responsabilidades:
 
 Esta organización permite mantener el proyecto modular, ordenado y fácilmente mantenible.
 
---
+---
 
-##Modelo Relacional Implementado
+## Modelo Relacional Implementado
 
 Se crearon las siguientes tablas principales:
     •    USUARIO
@@ -69,17 +69,17 @@ Además, todas las tablas incluyen campos de auditoría:
 
 Estos campos permiten llevar control sobre la creación y modificación de los registros.
 
---
+---
 
-##Integridad Referencial
+## Integridad Referencial
 
 La integridad referencial fue implementada mediante restricciones FOREIGN KEY.
 
 Esto garantiza que no existan registros dependientes sin su entidad padre correspondiente, evita la inserción de datos inconsistentes y mantiene la coherencia del modelo relacional.
 
---
+---
 
-##Convenciones Utilizadas
+## Convenciones Utilizadas
 
 Se utilizaron las siguientes convenciones de desarrollo:
     •    Uso de mayúsculas en nombres de tablas y columnas.
