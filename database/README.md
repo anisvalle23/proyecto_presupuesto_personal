@@ -35,11 +35,11 @@ En su lugar, el repositorio almacena únicamente los scripts SQL necesarios para
 ## Estructura de Scripts
 
 La carpeta database del proyecto está organizada por responsabilidades:
-    -    DDL: contiene el script de creación de tablas y relaciones.
-    -    procedimientos: incluye los procedimientos almacenados para operaciones CRUD y lógica de negocio.
-    -    funciones: contiene las funciones almacenadas para cálculos dinámicos del sistema.
-    -    triggers: incluye los disparadores utilizados para validaciones y automatización.
-    -    datos_prueba: contiene scripts de inserción de datos para pruebas.
+- DDL: contiene el script de creación de tablas y relaciones.
+- procedimientos: incluye los procedimientos almacenados para operaciones CRUD y lógica de negocio.
+- funciones: contiene las funciones almacenadas para cálculos dinámicos del sistema.
+- triggers: incluye los disparadores utilizados para validaciones y automatización.
+- datos_prueba: contiene scripts de inserción de datos para pruebas.
 
 Esta organización permite mantener el proyecto modular, ordenado y fácilmente mantenible.
 
@@ -48,24 +48,24 @@ Esta organización permite mantener el proyecto modular, ordenado y fácilmente 
 ## Modelo Relacional Implementado
 
 Se crearon las siguientes tablas principales:
-    -    USUARIO
-    -    PRESUPUESTO
-    -    CATEGORIA
-    -    SUBCATEGORIA
-    -    PRESUPUESTO_DETALLE
-    -    OBLIGACION_FIJA
-    -    TRANSACCION
-    -    OBLIGACIONFIJA_TRANSACCION
+- USUARIO
+- PRESUPUESTO
+- CATEGORIA
+- SUBCATEGORIA
+- PRESUPUESTO_DETALLE
+- OBLIGACION_FIJA
+- TRANSACCION
+- OBLIGACIONFIJA_TRANSACCION
 
 Cada tabla incluye una clave primaria para identificar de manera única cada registro.
 
 Las relaciones entre tablas fueron implementadas mediante llaves foráneas, siguiendo el modelo relacional definido en el diseño del sistema.
 
 Además, todas las tablas incluyen campos de auditoría:
-    -    CREADO_POR
-    -    MODIFICADO_POR
-    -    CREADO_EN
-    -    MODIFICADO_EN
+- CREADO_POR
+- MODIFICADO_POR
+- CREADO_EN
+- MODIFICADO_EN
 
 Estos campos permiten llevar control sobre la creación y modificación de los registros.
 
@@ -82,9 +82,9 @@ Esto garantiza que no existan registros dependientes sin su entidad padre corres
 ## Convenciones Utilizadas
 
 Se utilizaron las siguientes convenciones de desarrollo:
-    - Uso de mayúsculas en nombres de tablas y columnas.
-    - Separación de scripts por tipo de responsabilidad.
-    - Uso de nombres descriptivos en constraints.
-    - Implementación de lógica de negocio en la base de datos mediante funciones y procedimientos almacenados.
+- Uso de mayúsculas en nombres de tablas y columnas.
+- Separación de scripts por tipo de responsabilidad.
+- Uso de nombres descriptivos en constraints.
+- Implementación de lógica de negocio en la base de datos mediante funciones y procedimientos almacenados.
 
 La estructura y organización del proyecto permiten que la base de datos pueda recrearse completamente a partir de los scripts almacenados en el repositorio.
