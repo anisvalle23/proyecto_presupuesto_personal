@@ -34,7 +34,7 @@ routes → controllers → services → database (Stored Procedures)
 ## 🚀 Instalación y ejecución
 
 ### 1. Clonar el repositorio
-git clone <URL_DEL_REPO>
+git clone <https://github.com/anisvalle23/proyecto_presupuesto_personal>
 cd backend
 
 ### 2. Instalar dependencias
