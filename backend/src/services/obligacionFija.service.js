@@ -1,13 +1,13 @@
 const { conectarDB } = require('../config/db');
 
-function obtenerUsuarios() {
+function obtenerObligacionesFijas() {
   return new Promise(async (resolve, reject) => {
     let db;
 
     try {
       db = await conectarDB();
 
-      const sql = 'SELECT * FROM SP_LISTAR_USUARIOS';
+      const sql = 'SELECT * FROM SP_LISTAR_OBLIGACIONES_FIJAS';
 
       db.query(sql, (error, result) => {
         db.detach();
@@ -26,14 +26,14 @@ function obtenerUsuarios() {
   });
 }
 
-function obtenerUsuarioPorId(id) {
+function obtenerObligacionFijaPorId(id) {
   return new Promise(async (resolve, reject) => {
     let db;
 
     try {
       db = await conectarDB();
 
-      const sql = 'EXECUTE PROCEDURE SP_CONSULTAR_USUARIO(?)';
+      const sql = 'EXECUTE PROCEDURE SP_CONSULTAR_OBLIGACION_FIJA(?)';
 
       db.query(sql, [Number(id)], (error, result) => {
         db.detach();
@@ -43,7 +43,7 @@ function obtenerUsuarioPorId(id) {
           return;
         }
 
-        resolve(result[0] || null);
+        resolve(result || null);
       });
     } catch (error) {
       if (db) db.detach();
@@ -52,27 +52,30 @@ function obtenerUsuarioPorId(id) {
   });
 }
 
-function crearUsuario(datos) {
+function crearObligacionFija(datos) {
   return new Promise(async (resolve, reject) => {
     let db;
 
     try {
       db = await conectarDB();
 
+      const vigenteSql = datos.vigente ? 'TRUE' : 'FALSE';
+
       const sql = `
-        EXECUTE PROCEDURE SP_INSERTAR_USUARIO(?, ?, ?, ?, ?, ?, ?, ?, ?)
+        EXECUTE PROCEDURE SP_INSERTAR_OBLIGACION_FIJA(
+          ?, ?, ?, ?, ?, ${vigenteSql}, ?, ?, ?
+        )
       `;
 
       const params = [
-        datos.primer_nombre,
-        datos.segundo_nombre,
-        datos.primer_apellido,
-        datos.segundo_apellido,
-        datos.correo_electronico,
-        datos.clave,
-        Number(datos.salario_mensual),
-        Number(datos.creado_por),
-        Number(datos.modificado_por)
+        Number(datos.id_subcategoria),
+        datos.nombre_obligacion,
+        datos.descripcion_obligacion,
+        Number(datos.monto_fijo_mensual),
+        Number(datos.dia_vencimiento),
+        datos.fecha_inicio,
+        datos.fecha_fin,
+        Number(datos.creado_por)
       ];
 
       db.query(sql, params, (error, result) => {
@@ -83,7 +86,7 @@ function crearUsuario(datos) {
           return;
         }
 
-        resolve(result[0] || null);
+        resolve(result || null);
       });
     } catch (error) {
       if (db) db.detach();
@@ -92,25 +95,30 @@ function crearUsuario(datos) {
   });
 }
 
-function actualizarUsuario(id, datos) {
+function actualizarObligacionFija(id, datos) {
   return new Promise(async (resolve, reject) => {
     let db;
 
     try {
       db = await conectarDB();
 
+      const vigenteSql = datos.vigente ? 'TRUE' : 'FALSE';
+
       const sql = `
-        EXECUTE PROCEDURE SP_ACTUALIZAR_USUARIO(?, ?, ?, ?, ?, ?, ?, ?)
+        EXECUTE PROCEDURE SP_ACTUALIZAR_OBLIGACION_FIJA(
+          ?, ?, ?, ?, ?, ?, ${vigenteSql}, ?, ?, ?
+        )
       `;
 
       const params = [
         Number(id),
-        datos.primer_nombre,
-        datos.segundo_nombre,
-        datos.primer_apellido,
-        datos.segundo_apellido,
-        datos.correo_electronico,
-        Number(datos.salario_mensual),
+        Number(datos.id_subcategoria),
+        datos.nombre_obligacion,
+        datos.descripcion_obligacion,
+        Number(datos.monto_fijo_mensual),
+        Number(datos.dia_vencimiento),
+        datos.fecha_inicio,
+        datos.fecha_fin,
         Number(datos.modificado_por)
       ];
 
@@ -122,7 +130,7 @@ function actualizarUsuario(id, datos) {
           return;
         }
 
-        resolve(result[0] || null);
+        resolve(result || null);
       });
     } catch (error) {
       if (db) db.detach();
@@ -131,18 +139,16 @@ function actualizarUsuario(id, datos) {
   });
 }
 
-function desactivarUsuario(id, modificadoPor) {
+function eliminarObligacionFija(id, modificadoPor) {
   return new Promise(async (resolve, reject) => {
     let db;
 
     try {
       db = await conectarDB();
 
-      const sql = `
-        EXECUTE PROCEDURE SP_ELIMINAR_USUARIO(?, ?)
-      `;
+      const sql = 'EXECUTE PROCEDURE SP_ELIMINAR_OBLIGACION_FIJA(?, ?)';
 
-      db.query(sql, [Number(id), Number(modificadoPor)], (error) => {
+      db.query(sql, [Number(id), Number(modificadoPor)], (error, result) => {
         db.detach();
 
         if (error) {
@@ -150,7 +156,7 @@ function desactivarUsuario(id, modificadoPor) {
           return;
         }
 
-        resolve({ ok: true });
+        resolve(result || { ok: true });
       });
     } catch (error) {
       if (db) db.detach();
@@ -160,9 +166,9 @@ function desactivarUsuario(id, modificadoPor) {
 }
 
 module.exports = {
-  obtenerUsuarios,
-  obtenerUsuarioPorId,
-  crearUsuario,
-  actualizarUsuario,
-  desactivarUsuario
+  obtenerObligacionesFijas,
+  obtenerObligacionFijaPorId,
+  crearObligacionFija,
+  actualizarObligacionFija,
+  eliminarObligacionFija
 };

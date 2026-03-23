@@ -1,15 +1,15 @@
 const { conectarDB } = require('../config/db');
 
-function obtenerUsuarios() {
+function obtenerDetallesPresupuesto(idPresupuesto) {
   return new Promise(async (resolve, reject) => {
     let db;
 
     try {
       db = await conectarDB();
 
-      const sql = 'SELECT * FROM SP_LISTAR_USUARIOS';
+      const sql = 'SELECT * FROM SP_LISTAR_PRES_DET(?)';
 
-      db.query(sql, (error, result) => {
+      db.query(sql, [Number(idPresupuesto)], (error, result) => {
         db.detach();
 
         if (error) {
@@ -26,14 +26,14 @@ function obtenerUsuarios() {
   });
 }
 
-function obtenerUsuarioPorId(id) {
+function obtenerDetallePorId(id) {
   return new Promise(async (resolve, reject) => {
     let db;
 
     try {
       db = await conectarDB();
 
-      const sql = 'EXECUTE PROCEDURE SP_CONSULTAR_USUARIO(?)';
+      const sql = 'EXECUTE PROCEDURE SP_CONSULTAR_PRES_DET(?)';
 
       db.query(sql, [Number(id)], (error, result) => {
         db.detach();
@@ -43,7 +43,7 @@ function obtenerUsuarioPorId(id) {
           return;
         }
 
-        resolve(result[0] || null);
+        resolve(result || null);
       });
     } catch (error) {
       if (db) db.detach();
@@ -52,7 +52,7 @@ function obtenerUsuarioPorId(id) {
   });
 }
 
-function crearUsuario(datos) {
+function crearDetallePresupuesto(datos) {
   return new Promise(async (resolve, reject) => {
     let db;
 
@@ -60,19 +60,15 @@ function crearUsuario(datos) {
       db = await conectarDB();
 
       const sql = `
-        EXECUTE PROCEDURE SP_INSERTAR_USUARIO(?, ?, ?, ?, ?, ?, ?, ?, ?)
+        EXECUTE PROCEDURE SP_INSERTAR_PRES_DET(?, ?, ?, ?, ?)
       `;
 
       const params = [
-        datos.primer_nombre,
-        datos.segundo_nombre,
-        datos.primer_apellido,
-        datos.segundo_apellido,
-        datos.correo_electronico,
-        datos.clave,
-        Number(datos.salario_mensual),
-        Number(datos.creado_por),
-        Number(datos.modificado_por)
+        Number(datos.id_presupuesto),
+        Number(datos.id_subcategoria),
+        Number(datos.monto_mensual_asignado),
+        datos.observaciones,
+        Number(datos.creado_por)
       ];
 
       db.query(sql, params, (error, result) => {
@@ -83,7 +79,7 @@ function crearUsuario(datos) {
           return;
         }
 
-        resolve(result[0] || null);
+        resolve(result || null);
       });
     } catch (error) {
       if (db) db.detach();
@@ -92,7 +88,7 @@ function crearUsuario(datos) {
   });
 }
 
-function actualizarUsuario(id, datos) {
+function actualizarDetallePresupuesto(id, datos) {
   return new Promise(async (resolve, reject) => {
     let db;
 
@@ -100,17 +96,15 @@ function actualizarUsuario(id, datos) {
       db = await conectarDB();
 
       const sql = `
-        EXECUTE PROCEDURE SP_ACTUALIZAR_USUARIO(?, ?, ?, ?, ?, ?, ?, ?)
+        EXECUTE PROCEDURE SP_ACTUALIZAR_PRES_DET(?, ?, ?, ?, ?, ?)
       `;
 
       const params = [
         Number(id),
-        datos.primer_nombre,
-        datos.segundo_nombre,
-        datos.primer_apellido,
-        datos.segundo_apellido,
-        datos.correo_electronico,
-        Number(datos.salario_mensual),
+        Number(datos.id_presupuesto),
+        Number(datos.id_subcategoria),
+        Number(datos.monto_mensual_asignado),
+        datos.observaciones,
         Number(datos.modificado_por)
       ];
 
@@ -122,7 +116,7 @@ function actualizarUsuario(id, datos) {
           return;
         }
 
-        resolve(result[0] || null);
+        resolve(result || null);
       });
     } catch (error) {
       if (db) db.detach();
@@ -131,18 +125,16 @@ function actualizarUsuario(id, datos) {
   });
 }
 
-function desactivarUsuario(id, modificadoPor) {
+function eliminarDetallePresupuesto(id) {
   return new Promise(async (resolve, reject) => {
     let db;
 
     try {
       db = await conectarDB();
 
-      const sql = `
-        EXECUTE PROCEDURE SP_ELIMINAR_USUARIO(?, ?)
-      `;
+      const sql = 'EXECUTE PROCEDURE SP_ELIMINAR_PRES_DET(?)';
 
-      db.query(sql, [Number(id), Number(modificadoPor)], (error) => {
+      db.query(sql, [Number(id)], (error, result) => {
         db.detach();
 
         if (error) {
@@ -150,7 +142,7 @@ function desactivarUsuario(id, modificadoPor) {
           return;
         }
 
-        resolve({ ok: true });
+        resolve(result || { ok: true });
       });
     } catch (error) {
       if (db) db.detach();
@@ -160,9 +152,9 @@ function desactivarUsuario(id, modificadoPor) {
 }
 
 module.exports = {
-  obtenerUsuarios,
-  obtenerUsuarioPorId,
-  crearUsuario,
-  actualizarUsuario,
-  desactivarUsuario
+  obtenerDetallesPresupuesto,
+  obtenerDetallePorId,
+  crearDetallePresupuesto,
+  actualizarDetallePresupuesto,
+  eliminarDetallePresupuesto
 };

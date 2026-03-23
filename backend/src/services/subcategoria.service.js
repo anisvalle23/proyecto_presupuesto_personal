@@ -1,15 +1,15 @@
 const { conectarDB } = require('../config/db');
 
-function obtenerUsuarios() {
+function obtenerSubcategoriasPorCategoria(idCategoria) {
   return new Promise(async (resolve, reject) => {
     let db;
 
     try {
       db = await conectarDB();
 
-      const sql = 'SELECT * FROM SP_LISTAR_USUARIOS';
+      const sql = 'SELECT * FROM SP_LISTAR_SUBC_POR_CATEGORIA(?)';
 
-      db.query(sql, (error, result) => {
+      db.query(sql, [Number(idCategoria)], (error, result) => {
         db.detach();
 
         if (error) {
@@ -26,14 +26,14 @@ function obtenerUsuarios() {
   });
 }
 
-function obtenerUsuarioPorId(id) {
+function obtenerSubcategoriaPorId(id) {
   return new Promise(async (resolve, reject) => {
     let db;
 
     try {
       db = await conectarDB();
 
-      const sql = 'EXECUTE PROCEDURE SP_CONSULTAR_USUARIO(?)';
+      const sql = 'EXECUTE PROCEDURE SP_CONSULTAR_SUBCATEGORIA(?)';
 
       db.query(sql, [Number(id)], (error, result) => {
         db.detach();
@@ -52,25 +52,20 @@ function obtenerUsuarioPorId(id) {
   });
 }
 
-function crearUsuario(datos) {
+function crearSubcategoria(datos) {
   return new Promise(async (resolve, reject) => {
     let db;
 
     try {
       db = await conectarDB();
 
-      const sql = `
-        EXECUTE PROCEDURE SP_INSERTAR_USUARIO(?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `;
+      const sql = 'EXECUTE PROCEDURE SP_INSERTAR_SUBCATEGORIA(?, ?, ?, ?, ?, ?)';
 
       const params = [
-        datos.primer_nombre,
-        datos.segundo_nombre,
-        datos.primer_apellido,
-        datos.segundo_apellido,
-        datos.correo_electronico,
-        datos.clave,
-        Number(datos.salario_mensual),
+        Number(datos.id_categoria),
+        datos.nombre_subcategoria,
+        datos.descripcion_subcategoria,
+        Boolean(datos.es_por_defecto),
         Number(datos.creado_por),
         Number(datos.modificado_por)
       ];
@@ -92,25 +87,19 @@ function crearUsuario(datos) {
   });
 }
 
-function actualizarUsuario(id, datos) {
+function actualizarSubcategoria(id, datos) {
   return new Promise(async (resolve, reject) => {
     let db;
 
     try {
       db = await conectarDB();
 
-      const sql = `
-        EXECUTE PROCEDURE SP_ACTUALIZAR_USUARIO(?, ?, ?, ?, ?, ?, ?, ?)
-      `;
+      const sql = 'EXECUTE PROCEDURE SP_ACTUALIZAR_SUBCATEGORIA(?, ?, ?, ?)';
 
       const params = [
         Number(id),
-        datos.primer_nombre,
-        datos.segundo_nombre,
-        datos.primer_apellido,
-        datos.segundo_apellido,
-        datos.correo_electronico,
-        Number(datos.salario_mensual),
+        datos.nombre_subcategoria,
+        datos.descripcion_subcategoria,
         Number(datos.modificado_por)
       ];
 
@@ -131,18 +120,16 @@ function actualizarUsuario(id, datos) {
   });
 }
 
-function desactivarUsuario(id, modificadoPor) {
+function eliminarSubcategoria(id) {
   return new Promise(async (resolve, reject) => {
     let db;
 
     try {
       db = await conectarDB();
 
-      const sql = `
-        EXECUTE PROCEDURE SP_ELIMINAR_USUARIO(?, ?)
-      `;
+      const sql = 'EXECUTE PROCEDURE SP_ELIMINAR_SUBCATEGORIA(?)';
 
-      db.query(sql, [Number(id), Number(modificadoPor)], (error) => {
+      db.query(sql, [Number(id)], (error) => {
         db.detach();
 
         if (error) {
@@ -160,9 +147,9 @@ function desactivarUsuario(id, modificadoPor) {
 }
 
 module.exports = {
-  obtenerUsuarios,
-  obtenerUsuarioPorId,
-  crearUsuario,
-  actualizarUsuario,
-  desactivarUsuario
+  obtenerSubcategoriasPorCategoria,
+  obtenerSubcategoriaPorId,
+  crearSubcategoria,
+  actualizarSubcategoria,
+  eliminarSubcategoria
 };
