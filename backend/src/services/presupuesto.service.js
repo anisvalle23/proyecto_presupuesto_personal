@@ -216,11 +216,30 @@ function obtenerPresupuestoCompleto(id) {
   });
 }
 
+function obtenerPresupuestosPorUsuario(id_usuario) {
+  return new Promise(async (resolve, reject) => {
+    let db;
+    try {
+      db = await conectarDB();
+      const sql = 'SELECT * FROM PRESUPUESTO WHERE ID_USUARIO = ?';
+      db.query(sql, [Number(id_usuario)], (error, result) => {
+        db.detach();
+        if (error) return reject(error);
+        resolve(result);
+      });
+    } catch (error) {
+      if (db) db.detach();
+      reject(error);
+    }
+  });
+}
+
 module.exports = {
   obtenerPresupuestos,
   obtenerPresupuestoPorId,
   crearPresupuesto,
   actualizarPresupuesto,
   eliminarPresupuesto,
-  obtenerPresupuestoCompleto
+  obtenerPresupuestoCompleto,
+  obtenerPresupuestosPorUsuario
 };

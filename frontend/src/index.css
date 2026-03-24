@@ -1,0 +1,55 @@
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: #F5F5DC; /* Beige background */
+  color: #FFFFFF; /* White text */
+}
+
+h1 {
+  text-align: center;
+  color: #FFD700; /* Gold color for headings */
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  margin-top: 20px;
+}
+
+div {
+  padding: 20px;
+  text-align: center;
+}
+
+button {
+  background-color: #800020; /* Burgundy button */
+  color: #FFFFFF;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #A52A2A; /* Lighter burgundy on hover */
+}
+
+.card {
+  background-color: #5C2A2A; /* Darker burgundy for cards */
+  color: #FFFFFF;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  margin: 10px;
+}
+
+.card h5 {
+  color: #FFD700; /* Gold color for card titles */
+}
+
+.card p {
+  color: #FFFFFF;
+}
+
+.AppBar {
+  background-color: #800020 !important; /* Burgundy color for the top layer */
+}

@@ -2,8 +2,13 @@ const presupuestoService = require('../services/presupuesto.service');
 
 async function listarPresupuestos(req, res) {
   try {
-    const data = await presupuestoService.obtenerPresupuestos();
-
+    const { id_usuario } = req.query;
+    let data;
+    if (id_usuario) {
+      data = await presupuestoService.obtenerPresupuestosPorUsuario(id_usuario);
+    } else {
+      data = await presupuestoService.obtenerPresupuestos();
+    }
     res.status(200).json({
       ok: true,
       data
